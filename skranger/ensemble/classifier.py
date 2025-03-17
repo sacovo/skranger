@@ -6,6 +6,8 @@ from sklearn.exceptions import NotFittedError
 from sklearn.utils.multiclass import check_classification_targets
 from sklearn.utils.validation import check_array
 from sklearn.utils.validation import check_is_fitted
+from sklearn.utils.validation import validate_data
+from sklearn.utils.validation import _check_n_features
 
 from skranger import ranger
 from skranger.ensemble.base import BaseRangerForest
@@ -186,7 +188,7 @@ class RangerForestClassifier(BaseRangerForest, ClassifierMixin, BaseEstimator):
         self.tree_type_ = 9  # tree_type, TREE_PROBABILITY enables predict_proba
 
         # Check input
-        X, y = self._validate_data(X, y)
+        X, y = validate_data(self, X, y)
         check_classification_targets(y)
 
         # Check the init parameters
@@ -211,7 +213,7 @@ class RangerForestClassifier(BaseRangerForest, ClassifierMixin, BaseEstimator):
 
         # Set X info
         self.feature_names_ = [str(c).encode() for c in range(X.shape[1])]
-        self._check_n_features(X, reset=True)
+        _check_n_features(self, X, reset=True)
 
         # Check weights
         sample_weight, use_sample_weight = self._check_sample_weight(sample_weight, X)
@@ -305,7 +307,7 @@ class RangerForestClassifier(BaseRangerForest, ClassifierMixin, BaseEstimator):
         """
         check_is_fitted(self)
         X = check_array(X)
-        self._check_n_features(X, reset=False)
+        _check_n_features(self, X, reset=False)
 
         result = ranger.ranger(
             self.tree_type_,

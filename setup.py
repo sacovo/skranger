@@ -1,16 +1,17 @@
+#!/usr/bin/env python
+
+# This file ensures the compiled Cython extensions are included in wheel packages
+
 import os
 import sys
-
 import numpy as np
+from setuptools import setup, find_packages, Extension
 from Cython.Build import cythonize
-from setuptools import Extension
-from setuptools import setup
 
-# skranger project directory
+# Project directory
 top = os.path.dirname(os.path.abspath(__file__))
 
-# include skranger, ranger, and numpy headers
-# requires running buildpre.py to find src in this location
+# Include directories
 include_dirs = [
     top,
     os.path.join(top, "skranger"),
@@ -21,13 +22,8 @@ include_dirs = [
     np.get_include(),
 ]
 
-
 def find_pyx_files(directory, files=None):
-    """Recursively find all Cython extension files.
-
-    :param str directory: The directory in which to recursively crawl for .pyx files.
-    :param list files: A list of files in which to append discovered .pyx files.
-    """
+    """Recursively find all Cython extension files."""
     if files is None:
         files = []
     for file in os.listdir(directory):
@@ -38,12 +34,8 @@ def find_pyx_files(directory, files=None):
             find_pyx_files(path, files)
     return files
 
-
 def create_extension(module_name):
-    """Create a setuptools build extension for a Cython extension file.
-
-    :param str module_name: The name of the module
-    """
+    """Create a setuptools build extension for a Cython extension file."""
     path = module_name.replace(".", os.path.sep) + ".pyx"
     return Extension(
         module_name,
@@ -55,37 +47,21 @@ def create_extension(module_name):
         define_macros=[("NPY_NO_DEPRECATED_API", "NPY_1_7_API_VERSION")],
     )
 
-
 ext_modules = [create_extension(name) for name in find_pyx_files("skranger")]
 
-
-def build_ext():
-    setup(
-        name="skranger",
-        ext_modules=cythonize(
-            ext_modules,
-            gdb_debug=False,
-            force=True,
-            annotate=False,
-            compiler_directives={"language_level": "3"},
-        ),
-    )
-
-
-if "clean" in sys.argv or "build_ext" in sys.argv:
-    build_ext()
-
-
-def build(setup_kwargs):
-    # Build extensions
-    build_ext()
-    
-    # Make sure setup_kwargs includes the ext_modules
-    if 'ext_modules' not in setup_kwargs:
-        setup_kwargs['ext_modules'] = cythonize(
-            ext_modules,
-            gdb_debug=False,
-            force=True,
-            annotate=False,
-            compiler_directives={"language_level": "3"},
-        )
+setup(
+    name="skranger",
+    version="0.8.0",
+    packages=find_packages(),
+    ext_modules=cythonize(
+        ext_modules,
+        gdb_debug=False,
+        force=True,
+        annotate=False,
+        compiler_directives={"language_level": "3"},
+    ),
+    package_data={
+        "skranger": ["*.so", "*.pyd", "ranger/**/*"],
+    },
+    include_package_data=True,
+)

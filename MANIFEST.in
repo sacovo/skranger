@@ -1,0 +1,9 @@
+include LICENSE.txt
+include README.rst
+include CHANGELOG.rst
+include skranger/*.pxd
+include skranger/*.pyx
+include skranger/*.h
+recursive-include skranger/ranger *
+global-include *.so
+global-include *.pyd

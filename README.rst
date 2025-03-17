@@ -32,6 +32,12 @@ Installation
 
     pip install skranger
 
+If you encounter import errors with the wheel distribution, install directly from source:
+
+.. code-block:: bash
+
+    pip install git+https://github.com/sacovo/skranger.git
+
 
 Usage
 -----

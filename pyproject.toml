@@ -9,26 +9,29 @@ homepage = "https://github.com/crflynn/skranger"
 repository = "https://github.com/crflynn/skranger"
 documentation = "https://github.com/crflynn/skranger"
 include = [
-    { path="skranger/ranger/**/*" },
-    { path="CHANGELOG.rst", format="sdist" },
-    { path="LICENSE.txt", format="sdist" },
-    { path="README.rst", format="sdist" },
+  { path = "skranger/ranger/**/*" },
+  { path = "skranger/**/*.so" },
+  { path = "skranger/**/*.pyd" },
+  { path = "CHANGELOG.rst", format = "sdist" },
+  { path = "LICENSE.txt", format = "sdist" },
+  { path = "README.rst", format = "sdist" },
 ]
 build = "build.py"
 keywords = ["random", "forest", "ranger", "machine", "learning"]
 classifiers = [
-    "Development Status :: 4 - Beta",
-    "Intended Audience :: Science/Research",
-    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
-    "Programming Language :: C++",
-    "Programming Language :: Python",
-    "Programming Language :: Python :: 3",
-    "Topic :: Scientific/Engineering",
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Science/Research",
+  "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+  "Programming Language :: C++",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3",
+  "Topic :: Scientific/Engineering",
 ]
 
 [tool.poetry.dependencies]
-python = "^3.8.0"
+python = "^3.12.0"
 scikit-learn = ">=1.0"
+setuptools = "^76.0.0"
 
 [tool.poetry.dev-dependencies]
 cython = "^3.0a5"
@@ -36,17 +39,17 @@ black = "^22.3.0"
 isort = "^5.10.1"
 pytest = "^6.2.2"
 sphinx-rtd-theme = "^0.4.3"
-pandas = "^1.0.3"
+pandas = "*"
 pytest-cov = "^2.9.0"
 matplotlib = "^3.3.2"
 pytest-xdist = "^2.3.0"
-shap = {version = "^0.40.0", python = "<3.9"}  # llvm/numba doesnt work on 3.9
+shap = { version = "^0.40.0", python = "<3.9" } # llvm/numba doesnt work on 3.9
 cibuildwheel = "^2.4.0"
 Sphinx = "^4.5.0"
 
 [build-system]
-requires = ["poetry-core", "setuptools", "cython", "oldest-supported-numpy"]
-build-backend = "poetry.core.masonry.api"
+requires = ["setuptools>=61.0.0", "cython>=3.0a5", "oldest-supported-numpy", "wheel>=0.37.0"]
+build-backend = "setuptools.build_meta"
 
 [tool.black]
 line-length = 88
@@ -82,8 +85,8 @@ line_length = 88
 
 [tool.pytest.ini_options]
 filterwarnings = [
-    "ignore:divide by zero encountered in log:RuntimeWarning",
-    "ignore:Skipping check_sample_weights_invariance:sklearn.exceptions.SkipTestWarning",
+  "ignore:divide by zero encountered in log:RuntimeWarning",
+  "ignore:Skipping check_sample_weights_invariance:sklearn.exceptions.SkipTestWarning",
 ]
 
 [tool.cibuildwheel]

@@ -5,6 +5,8 @@ from sklearn.base import RegressorMixin
 from sklearn.exceptions import NotFittedError
 from sklearn.utils.validation import check_array
 from sklearn.utils.validation import check_is_fitted
+from sklearn.utils.validation import validate_data
+from sklearn.utils.validation import _check_n_features
 
 from skranger import ranger
 from skranger.ensemble.base import BaseRangerForest
@@ -201,14 +203,14 @@ class RangerForestRegressor(BaseRangerForest, RegressorMixin, BaseEstimator):
         self.tree_type_ = 3  # tree_type, TREE_REGRESSION
 
         # Check input
-        X, y = self._validate_data(X, y)
+        X, y = validate_data(self, X, y)
 
         # Check the init parameters
         self._validate_parameters(X, y, sample_weight)
 
         # Set X info
         self.feature_names_ = [str(c).encode() for c in range(X.shape[1])]
-        self._check_n_features(X, reset=True)
+        _check_n_features(self, X, reset=True)
 
         # Check weights
         sample_weight, use_sample_weight = self._check_sample_weight(sample_weight, X)
@@ -307,7 +309,7 @@ class RangerForestRegressor(BaseRangerForest, RegressorMixin, BaseEstimator):
             raise ValueError("Must set quantiles = True for quantile predictions.")
         check_is_fitted(self)
         X = check_array(X)
-        self._check_n_features(X, reset=False)
+        _check_n_features(self, X, reset=False)
 
         forest = self._get_terminal_node_forest(X)
         terminal_nodes = np.array(forest["predictions"]).astype(int)
@@ -338,7 +340,7 @@ class RangerForestRegressor(BaseRangerForest, RegressorMixin, BaseEstimator):
             return self.predict_quantiles(X, quantiles)
         check_is_fitted(self)
         X = check_array(X)
-        self._check_n_features(X, reset=False)
+        _check_n_features(self, X, reset=False)
 
         result = ranger.ranger(
             self.tree_type_,

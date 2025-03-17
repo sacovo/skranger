@@ -4,6 +4,7 @@ from sklearn.base import BaseEstimator
 from sklearn.exceptions import NotFittedError
 from sklearn.utils.validation import check_array
 from sklearn.utils.validation import check_is_fitted
+from sklearn.utils.validation import _check_n_features
 
 from skranger import ranger
 from skranger.ensemble.base import BaseRangerForest
@@ -196,7 +197,7 @@ class RangerForestSurvival(BaseRangerForest, BaseEstimator):
 
         # Set X info
         self.feature_names_ = [str(c).encode() for c in range(X.shape[1])]
-        self._check_n_features(X, reset=True)
+        _check_n_features(self, X, reset=True)
 
         # Check weights
         sample_weight, use_sample_weight = self._check_sample_weight(sample_weight, X)
@@ -282,7 +283,7 @@ class RangerForestSurvival(BaseRangerForest, BaseEstimator):
     def _predict(self, X):
         check_is_fitted(self)
         X = check_array(X)
-        self._check_n_features(X, reset=False)
+        _check_n_features(self, X, reset=False)
 
         result = ranger.ranger(
             self.tree_type_,
